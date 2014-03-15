@@ -28,6 +28,23 @@ THE SOFTWARE.
     var floor = Math.floor,
         abs = Math.abs;
 
+    function splitIntoContinuousSeries(seriesData) {
+      var segments = [];
+      var currentSegment = [];
+      for (var i = 0; i < seriesData.length; i++) {
+        var point = seriesData[i];
+        if (point) {
+          currentSegment.push(point);
+        } else {
+          segments.push(currentSegment);
+          segments.push([null]);
+          currentSegment = [];
+        }
+      }
+      segments.push(currentSegment);
+      return segments;
+    }
+
     function largestTriangleThreeBuckets(data, threshold) {
 
         var data_length = data.length;
@@ -100,7 +117,16 @@ THE SOFTWARE.
 
 
     function processRawData ( plot, series ) {
-        series.data = largestTriangleThreeBuckets( series.data, series.downsample.threshold );
+        var segments = splitIntoContinuousSeries(series.data);
+        var data = [];
+        for (var i = 0; i < segments.length; i++) {
+          var segment = segments[i];
+          if (segment && segment[0] !== null) {
+            segment = largestTriangleThreeBuckets(segment, series.downsample.threshold);
+          }
+          data = data.concat(segment);
+        }
+        series.data = data;
     }
 
 
