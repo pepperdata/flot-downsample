@@ -29,20 +29,20 @@ THE SOFTWARE.
         abs = Math.abs;
 
     function splitIntoContinuousSeries(seriesData) {
-      var segments = [];
-      var currentSegment = [];
-      for (var i = 0; i < seriesData.length; i++) {
-        var point = seriesData[i];
-        if (point) {
-          currentSegment.push(point);
-        } else {
-          segments.push(currentSegment);
-          segments.push([null]);
-          currentSegment = [];
+        var segments = [];
+        var currentSegment = [];
+        for (var i = 0; i < seriesData.length; i++) {
+            var point = seriesData[i];
+            if (point) {
+                currentSegment.push(point);
+            } else {
+                segments.push(currentSegment);
+                segments.push([null]);
+                currentSegment = [];
+            }
         }
-      }
-      segments.push(currentSegment);
-      return segments;
+        segments.push(currentSegment);
+        return segments;
     }
 
     function largestTriangleThreeBuckets(data, threshold) {
@@ -120,11 +120,17 @@ THE SOFTWARE.
         var segments = splitIntoContinuousSeries(series.data);
         var data = [];
         for (var i = 0; i < segments.length; i++) {
-          var segment = segments[i];
-          if (segment && segment[0] !== null) {
-            segment = largestTriangleThreeBuckets(segment, series.downsample.threshold);
-          }
-          data = data.concat(segment);
+              var segment = segments[i];
+              if (segment && segment[0] !== null && segment) {
+                    // relative size of the segment to the entire series
+                    var segmentSizeRatio = segment.length / series.data.length;
+
+                    var segmentThreshold = Math.ceil(series.downsample.threshold 
+                        * segmentSizeRatio);
+                    // downsample the segment
+                    segment = largestTriangleThreeBuckets(segment, segmentThreshold);
+              }
+              data = data.concat(segment);
         }
         series.data = data;
     }
