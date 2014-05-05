@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 (function ($) {
     "use strict";
-
     var floor = Math.floor,
         abs = Math.abs;
 
@@ -124,11 +123,12 @@ THE SOFTWARE.
               if (segment && segment[0] !== null && segment) {
                     // relative size of the segment to the entire series
                     var segmentSizeRatio = segment.length / series.data.length;
-
-                    var segmentThreshold = Math.ceil(series.downsample.threshold 
-                        * segmentSizeRatio);
-                    // downsample the segment
-                    segment = largestTriangleThreeBuckets(segment, segmentThreshold);
+                    if (segmentSizeRatio >= series.downsample.minimumSegmentRatio) {
+                      var segmentThreshold = Math.ceil(series.downsample.threshold
+                          * segmentSizeRatio);
+                      // downsample the segment
+                      segment = largestTriangleThreeBuckets(segment, segmentThreshold);
+                    }
               }
               data = data.concat(segment);
         }
@@ -139,7 +139,9 @@ THE SOFTWARE.
     var options = {
         series: {
             downsample: {
-                threshold: 1000 // 0 disables downsampling for this series.
+                threshold: 1000, // 0 disables downsampling for this series.
+                // downsample only if the current segment is 10% of the total series length
+                minimumSegmentRatio: 0.1
             }
         }
     };

@@ -1,0 +1,22 @@
+{
+  "name": "flot-downsample",
+  "version": "0.0.0",
+  "description": "flot-downsample: Downsample plugin for Flot ================================================",
+  "main": "demo_data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pepperdata/flot-downsample.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pepperdata/flot-downsample/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-uglify": "~0.4.0"
+  }
+}
