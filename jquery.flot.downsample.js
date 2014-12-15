@@ -116,21 +116,20 @@ THE SOFTWARE.
 
 
     function processRawData ( plot, series ) {
+        if (series.downsample.pixelsPerPoint <= 1) {
+            return;
+        }
         var segments = splitIntoContinuousSeries(series.data);
         var data = [];
         for (var i = 0; i < segments.length; i++) {
-              var segment = segments[i];
-              if (segment && segment[0] !== null && segment) {
-                    // relative size of the segment to the entire series
-                    var segmentSizeRatio = segment.length / series.data.length;
-                    if (segmentSizeRatio >= series.downsample.minimumSegmentRatio) {
-                      var segmentThreshold = Math.ceil(series.downsample.threshold
-                          * segmentSizeRatio);
-                      // downsample the segment
-                      segment = largestTriangleThreeBuckets(segment, segmentThreshold);
-                    }
-              }
-              data = data.concat(segment);
+            var segment = segments[i];
+            if (segment && segment[0] !== null) {
+                // Use 3 as minimum segmentThreshold -- smaller threshold results in no downsampling
+                var segmentThreshold = Math.max(3, Math.ceil(segment.length /
+                    series.downsample.ratio));
+                segment = largestTriangleThreeBuckets(segment, segmentThreshold);
+            }
+            data = data.concat(segment);
         }
         series.data = data;
     }
@@ -139,9 +138,7 @@ THE SOFTWARE.
     var options = {
         series: {
             downsample: {
-                threshold: 1000, // 0 disables downsampling for this series.
-                // downsample only if the current segment is 10% of the total series length
-                minimumSegmentRatio: 0.1
+              ratio: 5 // A value <= 1 disables downsampling
             }
         }
     };
