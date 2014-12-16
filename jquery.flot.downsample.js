@@ -138,7 +138,7 @@ THE SOFTWARE.
     var options = {
         series: {
             downsample: {
-              ratio: 5 // A value <= 1 disables downsampling
+              ratio: 0 // A value <= 1 disables downsampling
             }
         }
     };
