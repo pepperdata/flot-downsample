@@ -116,7 +116,7 @@ THE SOFTWARE.
 
 
     function processRawData ( plot, series ) {
-        if (series.downsample.pixelsPerPoint <= 1) {
+        if (series.downsample.ratio <= 1) {
             return;
         }
         var segments = splitIntoContinuousSeries(series.data);
